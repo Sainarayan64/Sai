@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gold Miner Clicker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #1a1a2e;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        #gold {
+            width: 150px;
+            height: 150px;
+            cursor: pointer;
+            margin: 20px auto;
+            transition: transform 0.1s;
+        }
+        #gold:active {
+            transform: scale(0.95);
+        }
+        #counter {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 20px;
+        }
+        #upgrades {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .upgrade-btn {
+            padding: 12px;
+            background: #f1c40f;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .upgrade-btn:disabled {
+            background: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gold Miner Clicker</h1>
+    <div id="counter">Gold: 0</div>
+    <img id="gold" src="https://cdn-icons-png.flaticon.com/512/272/272525.png" alt="Gold">
+    <div id="upgrades">
+        <button class="upgrade-btn" onclick="buyMiner()">Buy Miner (10 gold) | Owned: <span id="miners">0</span></button>
+        <button class="upgrade-btn" onclick="buyExcavator()">Buy Excavator (50 gold) | Owned: <span id="excavators">0</span></button>
+    </div>
+
+    <!-- Sound Effects -->
+    <audio id="clickSound" src=""></audio>
+    <audio id="buySound" src=""></audio>
+
+    <script>
+        let gold = 0;
+        let miners = 0;
+        let excavators = 0;
+
+        // Click the gold
+        document.getElementById('gold').addEventListener('click', function() {
+            gold++;
+            updateCounter();
+            playSound('clickSound');
+        });
+
+        // Auto-miners (1 gold/sec per miner)
+        setInterval(function() {
+            gold += miners;
+            updateCounter();
+        }, 1000);
+
+        // Auto-excavators (5 gold/sec per excavator)
+        setInterval(function() {
+            gold += excavators * 5;
+            updateCounter();
+        }, 1000);
+
+        // Update display
+        function updateCounter() {
+            document.getElementById('counter').textContent = `Gold: ${gold}`;
+        }
+
+        // Buy upgrades
+        function buyMiner() {
+            if (gold >= 10) {
+                gold -= 10;
+                miners++;
+                document.getElementById('miners').textContent = miners;
+                updateCounter();
+                playSound('buySound');
+            } else {
+                alert("Not enough gold!");
+            }
+        }
+
+        function buyExcavator() {
+            if (gold >= 50) {
+                gold -= 50;
+                excavators++;
+                document.getElementById('excavators').textContent = excavators;
+                updateCounter();
+                playSound('buySound');
+            } else {
+                alert("Not enough gold!");
+            }
+        }
+
+        // Play sound
+        function playSound(soundId) {
+            const sound = document.getElementById(soundId);
+            sound.currentTime = 0;
+            sound.play();
+        }
+    </script>
+</body>
+</html>
